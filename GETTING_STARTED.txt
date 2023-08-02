@@ -1,0 +1,93 @@
+
+__QUICK NOTES__
+
+File>> open folder 
+Terminal>> new terminal 
+
+python3 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+
+
+if you need to, install pipreqs, on your default python terminal 
+pip install pipreqs
+then CD to your root directory 
+then run (use --force to force overwrite) 
+pipreqs .
+
+Note this is just a quick initial fix and version issues may need to be considered later. 
+run unit tests if they exist. 
+
+
+pip3 install -r pip_start.txt # generic packages to quickly get started on a project
+OR 
+pip3 install -r requirements.txt
+
+pip install pipreqs # should already be installed on my mac 
+#then
+pipreqs path/to/project
+
+
+for example 
+
+(base) phil@Phillips-MacBook-Pro ~ % pipreqs /Users/phil/Dropbox/GITHUB/nillip/nillip
+INFO: Successfully saved requirements file in /Users/phil/Dropbox/GITHUB/nillip/nillip/requirements.txt
+#################pip freeze > requirements.txt
+
+
+
+__JUPYTER__
+Must install ipython (see in pip_start.txt file) (ipykernel)
+https://stackoverflow.com/questions/58119823/jupyter-notebooks-in-visual-studio-code-does-not-use-the-active-virtual-environm
+
+STEP 1
+pip install ipykernel
+
+
+You must RESTART VS Code after you pip install, specifically for 'ipykernel'. 
+But just always do it to be safe. 
+ALSO leave 'user' as 'user' and just change the project name 
+
+Then use 
+ipython kernel install --user --name=EXAMPLE_PROJECT_NAME
+E.G. >>>ipython kernel install --user --name=scrapifurs
+
+ipython kernel install --user --name=scrapifurs
+
+
+Where EXAMPLE_PROJECT_NAME is what you want to name it so make it match the name of your project 
+folder to stay organized. Note this is just a name and it will run whatever virtual 
+environment you run that line from. 
+
+This installs the venv onto jupyter, then you can type 
+jupyter notebook
+Then select the environment you want to use with when creating a new .ipynb file. 
+
+
+
+
+UNINSTALL jupyter VENV
+
+From a given venv type
+jupyter kernelspec uninstall EXAMPLE_PROJECT_NAME
+
+
+__PYTORCH__
+Systems require different versions go here to check out what to download 
+https://pytorch.org/get-started/locally/
+For my MBP 2015 it is 
+pip3 install torch torchvision torchaudio
+
+
+
+__MISC__
+
+
+set python default in mac 
+
+echo "alias python='/usr/local/bin/python3'" >> ~/.zshrc
+source ~/.zshrc
+
+
+
+

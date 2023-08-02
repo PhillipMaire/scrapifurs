@@ -1,0 +1,43 @@
+
+pip install ipywidgets
+pip install matplotlib   
+pip install seaborn                      
+       
+
+ipykernel
+numpy
+pandas
+tqdm
+
+
+
+
+langchain 
+transformers
+einops
+accelerate
+
+bitsandbytes
+
+
+opencv_python
+tensorflow
+natsort
+matplotlib
+
+Pillow
+imgaug
+Pyment
+opencv-python
+scikit-learn
+setuptools
+
+ipython
+pytz
+seaborn
+mat73
+keras
+lightgbm
+shap
+joblib
+optuna

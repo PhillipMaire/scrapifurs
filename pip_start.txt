@@ -1,0 +1,8 @@
+selenium
+pandas
+python-dotenv
+
+openai
+bs4
+
+lxml

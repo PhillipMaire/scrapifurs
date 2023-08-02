@@ -1,0 +1,35 @@
+Extract the names: Please look for patterns indicating a person's name. Names are usually proper nouns and are generally the first information provided in each data point.
+
+    Find the job titles: Please identify each person's job title. This information follows the name and often contains phrases such as 'Data Scientist', 'Neuroscientist', 'Senior Associate Data Scientist', or a variant that includes the role and any additional qualifiers.
+
+    Identify the job location: This information typically follows the job title and is usually a city or metropolitan area, such as 'Pasadena, CA' or 'Los Angeles Metropolitan Area'.
+
+    Find the company names: The company names usually follow the job location. In case there is no current company mentioned, or the person is actively seeking a job, make a note of that by using placeholders like 'None (Job Seeking)' or 'None (No Company Mentioned)'.
+
+    Construct the dictionary: Organize all the extracted information into a dictionary format where the key represents the type of information (e.g., 'Name', 'Job Titles', 'Job Location', 'Company Name') and the value is a list of all the extracted information of that type in the order of appearance.
+
+    Formatting the instructions: Always make sure to start the code block with a comment '##BEGIN##', fill in the data accordingly, and end it with '##END##'. All columns of data should align with each other.
+
+    For example:
+
+
+    ##BEGIN##
+
+    DF_TEMP = {
+        "Name": ["Person 1", "Person 2", ...],
+        "Job Titles": ["Job 1", "Job 2", ...],
+        "Job Location": ["Location 1", "Location 2", ...],
+        "Company Name": ["Company 1", "Company 2", ...]
+    }
+
+    ##END##
+
+
+    Replace "Person 1", "Job 1", "Location 1", "Company 1", etc., with the actual extracted data.
+
+    Please make sure to follow these instructions to achieve consistent results.
+
+
+    here is the text:
+
+
