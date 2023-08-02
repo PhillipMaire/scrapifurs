@@ -1,6 +1,6 @@
-# Scraifurs
+# Scrapifurs
 
-Scraifurs is a toolset to scrape and curate data using. I use chat GPT API to curate select data
+Scrapifurs is a toolset to scrape and curate data using. I use chat GPT API to curate select data
 ## Features
 
 - **Web Scraping**: Easy-to-use functions to scrape data from various web sources.
@@ -9,7 +9,7 @@ Scraifurs is a toolset to scrape and curate data using. I use chat GPT API to cu
 
 ## Installation
 
-Install Scraifurs using pip:
+Install Scrapifurs using pip:
 
 ```bash
-pip install scraifurs
+pip install Scrapifurs
