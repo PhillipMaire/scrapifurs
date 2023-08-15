@@ -1,3 +1,6 @@
+# see the [overview on medium]([url](https://medium.com/@phillip.maire/scraping-visualizing-and-cleaning-data-from-linkedin-using-chatgpt4-for-educational-purposes-713c1ea20cb))
+
+
 # Scrapifurs
 
 Scrapifurs is a script designed to scrape and curate data. I utilize the ChatGPT API for data cleaning. Scrapifurs is intended for educational purposes only and should not be used for any unauthorized or illicit activities. Always respect privacy and terms of service when handling data.## Features
