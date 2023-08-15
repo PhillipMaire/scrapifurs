@@ -1,4 +1,4 @@
-# see the [overview on medium]([url](https://medium.com/@phillip.maire/scraping-visualizing-and-cleaning-data-from-linkedin-using-chatgpt4-for-educational-purposes-713c1ea20cb))
+# [Check out the article on medium](https://medium.com/@phillip.maire/scraping-visualizing-and-cleaning-data-from-linkedin-using-chatgpt4-for-educational-purposes-713c1ea20cb)
 
 
 # Scrapifurs
