@@ -1,12 +1,22 @@
+pip install --upgrade pip setuptools wheel
+
+
 
 __QUICK NOTES__
 
 File>> open folder 
 Terminal>> new terminal 
 
-python3 -m venv .venv
-source .venv/bin/activate
+python3 --version 
+
+
+python3.11 -m venv .venv_M1
+source .venv_M1/bin/activate
 pip install --upgrade pip
+
+#                             python3 -m venv .venv
+#                             source .venv_M1/bin/activate
+#                             pip install --upgrade pip
 
 
 if you need to, install pipreqs, on your default python terminal 
@@ -42,6 +52,8 @@ https://stackoverflow.com/questions/58119823/jupyter-notebooks-in-visual-studio-
 
 STEP 1
 pip install ipykernel
+pip install notebook
+
 
 
 You must RESTART VS Code after you pip install, specifically for 'ipykernel'. 
