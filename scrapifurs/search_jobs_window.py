@@ -320,9 +320,9 @@ def get_job_details(driver, existing_job_ids=[]):
             job_dict["time_added"].append(formatted_time_as_int)
 
             
-            if job_listings.click_job_by_index(job_ind): #$%^ validate clicks only new ones
+            if job_listings.click_job_by_index(job_ind): 
                 job_dict["about_the_job"].append(job_listings.get_about_job_info())
-                time.sleep(np.random.uniform(1.5, 3)) # if its too fast i think linked in will flag 
+                time.sleep(np.random.uniform(1.5, 3)) # if its too fast i think linked in will flag it 
             else:
                 job_dict["about_the_job"].append('NA')
 
@@ -374,7 +374,7 @@ def scrape_job_data(info_dict, scraper_settings_list, data_class, auto_update_li
     Args:
     - info_dict: A dictionary containing general information for the browser setup.
     - scraper_settings: A dictionary containing specific settings for scraping, including start_url.
-    - data_class: An instance of a DataClass containing df_main and a save_it method.
+    - data_class: An instance of a DataFile containing df_main and a save_it method.
     """
     for scraper_settings in scraper_settings_list:
         start_url = scraper_settings.get('start_url')
@@ -410,9 +410,12 @@ def scrape_job_data(info_dict, scraper_settings_list, data_class, auto_update_li
                     job_data = get_job_details(driver, existing_job_ids)
                     job_data = pd.DataFrame(job_data)
                     job_data['job_ids'] = job_data['job_ids'].astype('int')
-                    data_class.df_main = update_dataframe(data_class.df_main, job_data, ['job_ids'])
+                    if len(job_data)>0:
+                        data_class.df_main = update_dataframe(data_class.df_main, job_data, ['job_ids'])
                 
-                    data_class.save_it()
+                        data_class.save_it()
+                        #update the file to have pay info as ints
+                        utils.update_job_data(data_class.filename, overwrite=True)
                 
                 print('_____________________________________________\n\n_____________________________________________')
                 time.sleep(update_every_n_secs)

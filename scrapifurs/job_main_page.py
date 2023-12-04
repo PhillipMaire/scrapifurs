@@ -56,8 +56,6 @@ from datetime import datetime
 
 
 
-
-
 def open_browser(info_dict):
     #init chrome 
     chrome_options = Options()
@@ -204,11 +202,18 @@ def get_apply_link(driver):
 
 
 def get_location(element):
-    location_div = element.find_element(By.CSS_SELECTOR, ".job-details-jobs-unified-top-card__primary-description div")
+    try:
+        location_div = element.find_element(By.CSS_SELECTOR, ".job-details-jobs-unified-top-card__primary-description div")
+    except:
+        print('used new method for get-location')
+        location_div = element.find_element(By.CSS_SELECTOR, "div.mb2")
+    
+
+
     location_parts = location_div.text.split('·')
     potential_location = location_parts[1].strip().split()
-    if "," in potential_location[1]:
-        return ' '.join(potential_location[:2])
+    if "," in ''.join(potential_location[:1]):
+        return ' '.join(potential_locatixon[:2])
     else:
         return ' '.join(potential_location[:1])
 

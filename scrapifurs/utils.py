@@ -22,6 +22,109 @@ import glob
 from scrapifurs.search_jobs_window import DataFile
 
 
+import numpy as np
+import re
+
+
+def update_job_data(path, overwrite=False):
+    """
+    Processes Excel files containing job data, updating them with additional salary information. 
+    This function can handle both single Excel files and directories containing multiple Excel files.
+
+    Parameters:
+    - path (str): The path to an Excel file or a directory containing Excel files. 
+                  If a directory is specified, the function processes all '.xlsx' files within it.
+    - overwrite (bool, optional): If set to True, the function overwrites existing salary information in the files.
+                                  If False, it skips files that already contain specified salary columns.
+                                  Defaults to False.
+
+    Behavior:
+    - The function adds new columns ('lower_salaries', 'upper_salaries', 'units', 'yearly_lower_salaries', 
+      'yearly_upper_salaries') to the DataFrame based on parsed salary information.
+    - For hourly wages, it converts them to yearly salaries using a predefined conversion factor.
+    - If 'overwrite' is False and any of the specified columns already exist in a file, 
+      that file is skipped without modification.
+    - Prints messages for skipped files or if the provided path is neither a file nor a directory.
+    """
+
+    # Check if the path is a directory
+    if os.path.isdir(path):
+        # If it's a directory, process all .xlsx files in it
+        xlsx_files = glob.glob(os.path.join(path, '*.xlsx'))
+        for file in xlsx_files:
+            update_job_data(file, overwrite)
+    elif os.path.isfile(path):
+        # If it's a file, process the file
+        job_data = pd.read_excel(path)
+
+        # Define the columns to check for existing data
+        check_columns = ['lower_salaries', 'upper_salaries', 'units', 'yearly_lower_salaries', 'yearly_upper_salaries']
+
+        # Check if any of the specified columns already exist
+        if not job_data.columns.isin(check_columns).any() or overwrite:
+            # If none of the columns exist, process the file
+
+            # Process salary information
+            lower_salaries, upper_salaries, units = parse_salary_info(job_data['pay'])
+            job_data[check_columns] = pd.DataFrame([lower_salaries, upper_salaries, units, lower_salaries, upper_salaries]).T
+
+            # Function to convert hourly to yearly salary
+            def convert_hr_to_yr(x):
+                return int(x * 1700)
+
+            # Apply conversion for hourly wages
+            c = job_data['units'] == 'hr'
+            job_data.loc[c, 'yearly_lower_salaries'] = job_data.loc[c, 'lower_salaries'].apply(convert_hr_to_yr)
+            job_data.loc[c, 'yearly_upper_salaries'] = job_data.loc[c, 'upper_salaries'].apply(convert_hr_to_yr)
+
+            # Save the updated DataFrame back to the original Excel file
+            job_data.to_excel(path, index=False)
+        else:
+            print(f"File {path} already contains one or more of the specified columns and overwrite is False. Skipping.")
+    else:
+        print(f"Path {path} is neither a file nor a directory.")
+
+
+def covert_k_to_num(str):
+    str = str.lower()
+    if 'k' in str:
+        num_out = int(float(str.split('k')[0]))*1000
+    else:
+        num_out = float(str)
+    return num_out
+        
+def parse_salary_info(in_list):
+    
+    in_list = ["" if pd.isna(item) else item for item in in_list]
+
+    lower_salaries = []
+    upper_salaries = []
+    units = []
+
+    for item in in_list:
+        # Regular expression to find salary ranges and units
+        # matches = re.findall(r'\$([0-9]+(?:K)?)\s*\/\s*(yr|hr)', item)
+        matches = re.findall(r'\$([0-9]+(?:\.[0-9]+)?(?:K)?)\s*\/\s*(yr|hr)', item)
+
+        if matches:
+            # Convert salary string to numerical value
+            lower_salary = covert_k_to_num(matches[0][0])
+            if len(matches) > 1:
+                upper_salary = covert_k_to_num(matches[1][0])
+            else:
+                upper_salary = lower_salary
+
+            lower_salaries.append(lower_salary)
+            upper_salaries.append(upper_salary)
+            units.append(matches[0][1])
+        else:
+            lower_salaries.append(np.nan)
+            upper_salaries.append(np.nan)
+            units.append('NA')
+
+    return lower_salaries, upper_salaries, units
+
+
 def update_master_files(data_folder, fn_applied, fn_skipped):
     files = glob.glob(f'{data_folder}/*.xlsx')
 
@@ -550,7 +653,7 @@ class DataFile:
 
 #     Args:
 #     - info_dict: A dictionary containing start_url and other necessary information.
-#     - data_class: An instance of a DataClass containing df_main and a save_it method.
+#     - data_class: An instance of a DataFile containing df_main and a save_it method.
 #     - n_pages_to_scrape: Number of pages to scrape.
 #     - wait_sec_each_page: Time to wait on each page before scraping.
 #     - update_every_n_secs: How often to update the data in seconds.
@@ -583,54 +686,54 @@ class DataFile:
 
 
 
-def scrape_job_data(info_dict, scraper_settings_list, data_class, auto_update_link=True):
-    """
-    Scrapes job data based on specified settings.
+# def scrape_job_data(info_dict, scraper_settings_list, data_class, auto_update_link=True):
+#     """
+#     Scrapes job data based on specified settings.
 
-    Args:
-    - info_dict: A dictionary containing general information for the browser setup.
-    - scraper_settings: A dictionary containing specific settings for scraping, including start_url.
-    - data_class: An instance of a DataClass containing df_main and a save_it method.
-    """
-    for scraper_settings in scraper_settings_list:
-        start_url = scraper_settings.get('start_url')
-        n_pages_to_scrape = scraper_settings.get('n_pages_to_scrape', 5)
-        wait_sec_each_page = scraper_settings.get('wait_sec_each_page', 5)
-        update_every_n_secs = scraper_settings.get('update_every_n_secs', 60*5)
-        existing_job_ids = scraper_settings.get('existing_job_ids', [])
+#     Args:
+#     - info_dict: A dictionary containing general information for the browser setup.
+#     - scraper_settings: A dictionary containing specific settings for scraping, including start_url.
+#     - data_class: An instance of a DataFile containing df_main and a save_it method.
+#     """
+#     for scraper_settings in scraper_settings_list:
+#         start_url = scraper_settings.get('start_url')
+#         n_pages_to_scrape = scraper_settings.get('n_pages_to_scrape', 5)
+#         wait_sec_each_page = scraper_settings.get('wait_sec_each_page', 5)
+#         update_every_n_secs = scraper_settings.get('update_every_n_secs', 60*5)
+#         existing_job_ids = scraper_settings.get('existing_job_ids', [])
     
-        driver = open_browser(info_dict)
-        driver.get(start_url)
+#         driver = open_browser(info_dict)
+#         driver.get(start_url)
         
-        if auto_update_link:
-            # we click the search button to update the link then print it
-            job_listings = JobListings(driver)
-            time.sleep(2)
-            job_listings.click_search_button()
-            current_url = driver.current_url
-            print("Current URL:", current_url)
-            start_url = current_url
-            driver.get(start_url)
+#         if auto_update_link:
+#             # we click the search button to update the link then print it
+#             job_listings = JobListings(driver)
+#             time.sleep(2)
+#             job_listings.click_search_button()
+#             current_url = driver.current_url
+#             print("Current URL:", current_url)
+#             start_url = current_url
+#             driver.get(start_url)
     
     
-        try:
-            while True:
-                for n_page in range(n_pages_to_scrape):
-                    if n_page == 0:
-                        # Go back to the first page
-                        driver.get(start_url)
-                    else:
-                        go_to_next_page(driver)
-                    time.sleep(wait_sec_each_page)
-                    # Update data
-                    job_data = get_job_details(driver, existing_job_ids)
-                    job_data = pd.DataFrame(job_data)
-                    job_data['job_ids'] = job_data['job_ids'].astype('int')
-                    data_class.df_main = update_dataframe(data_class.df_main, job_data, ['job_ids'])
+#         try:
+#             while True:
+#                 for n_page in range(n_pages_to_scrape):
+#                     if n_page == 0:
+#                         # Go back to the first page
+#                         driver.get(start_url)
+#                     else:
+#                         go_to_next_page(driver)
+#                     time.sleep(wait_sec_each_page)
+#                     # Update data
+#                     job_data = get_job_details(driver, existing_job_ids)
+#                     job_data = pd.DataFrame(job_data)
+#                     job_data['job_ids'] = job_data['job_ids'].astype('int')
+#                     data_class.df_main = update_dataframe(data_class.df_main, job_data, ['job_ids'])
                 
-                    data_class.save_it()
+#                     data_class.save_it()
                 
-                print('_____________________________________________\n\n_____________________________________________')
-                time.sleep(update_every_n_secs)
-        finally:
-            driver.quit()
+#                 print('_____________________________________________\n\n_____________________________________________')
+#                 time.sleep(update_every_n_secs)
+#         finally:
+#             driver.quit()
